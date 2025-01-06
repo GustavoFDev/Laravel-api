@@ -117,7 +117,7 @@ return [
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '27017'),
-            'database' => env('DB_DATABASE', 'skillys-data'),
+            'database' => env('DB_DATABASE', 'skillsys-data'),
 
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
