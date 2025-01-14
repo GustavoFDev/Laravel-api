@@ -15,12 +15,16 @@ Route::apiResource('pruebas', PruebaController::class)->middleware('auth:sanctum
 
 Route::apiResource('applicant', ApplicantController::class);
 
-Route::post('/register', [AuthController::class, 'register'])->middleware('auth:sanctum');
+Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/users-index', [AuthController::class, 'index'])->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+Route::put('users/{id}/status', [AuthController::class, 'updateStatus'])->middleware('auth:sanctum');
+
+Route::delete('users/{id}', [AuthController::class, 'destroy'])->middleware('auth:sanctum');
 
 Route::apiResource('test_view', ApplicantController::class);
