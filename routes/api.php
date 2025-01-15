@@ -2,11 +2,10 @@
 
 use App\Http\Controllers\ApplicantController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CreenciasPController;
-use App\Http\Controllers\PruebaController;
+use App\Http\Controllers\Creencias1Controller;
+use App\Http\Controllers\PruebaController;   
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 
 //Route::get('/user', function (Request $request) {
 //    return $request->user();
@@ -14,11 +13,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResource('pruebas', PruebaController::class)->middleware('auth:sanctum');
 
-Route::apiResource(name: 'creencias_personales1', controller: CreenciasPController::class);
+Route::apiResource(name: 'creencias_personales1', controller: Creencias1Controller::class);
 
 Route::apiResource('applicant', ApplicantController::class);
-
-Route::apiResource('test_view', ApplicantController::class);
 
 Route::post('/register', [AuthController::class, 'register']);
 

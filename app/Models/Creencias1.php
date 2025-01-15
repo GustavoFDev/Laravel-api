@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+//use Illuminate\Database\Eloquent\Model;
+use MongoDb\Laravel\Eloquent\Model;
 
-class CreenciasP extends Model
+class Creencias1 extends Model
 {
     protected $fillable = [
         'mcp1_1',
@@ -54,6 +55,8 @@ class CreenciasP extends Model
         'mcp1_45',
         'mcp1_46',
         'mcp1_47',
-        'mcp1_48'
+        'mcp1_48',
+        'remaining_time'
     ];
 }
+
