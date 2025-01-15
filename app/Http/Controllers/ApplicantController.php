@@ -37,14 +37,12 @@ class ApplicantController extends Controller
         ]); 
                 
         $applicant = Applicant::create($fields); 
+
+        
         return $applicant;
        
     }
 
-    public function show(applicant $applicant)
-    {
-        return $applicant;
-    }
 
     public function update(Request $request, applicant $applicant)
     {
@@ -78,4 +76,12 @@ class ApplicantController extends Controller
 
         return['mensaje' => 'The applicant was deleted'];
     }
+
+    public function show($id)
+    {
+        $applicant = Applicant::findOrFail($id);
+        return response()->json($applicant);
+    }
+
+    
 }

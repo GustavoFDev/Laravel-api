@@ -4,9 +4,13 @@ namespace App\Models;
 
 //use Illuminate\Database\Eloquent\Model;
 use MongoDb\Laravel\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 
 class Applicant extends Model
 {
+    use HasApiTokens, Notifiable;
+
     protected $fillable = [
         'name_a',
         'surname_p',
@@ -25,4 +29,5 @@ class Applicant extends Model
         'employee', 
         'former_employee'
     ];
+
 }

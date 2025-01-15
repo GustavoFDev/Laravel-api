@@ -18,8 +18,6 @@ Route::apiResource(name: 'creencias_personales1', controller: CreenciasPControll
 
 Route::apiResource('applicant', ApplicantController::class);
 
-Route::apiResource('test_view', ApplicantController::class);
-
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/users-index', [AuthController::class, 'index'])->middleware('auth:sanctum');
@@ -32,4 +30,3 @@ Route::put('users/{id}/status', [AuthController::class, 'updateStatus'])->middle
 
 Route::delete('users/{id}', [AuthController::class, 'destroy'])->middleware('auth:sanctum');
 
-Route::apiResource('test_view', ApplicantController::class);
