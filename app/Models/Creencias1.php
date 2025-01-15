@@ -8,6 +8,7 @@ use MongoDb\Laravel\Eloquent\Model;
 class Creencias1 extends Model
 {
     protected $fillable = [
+        'applicant_id',
         'mcp1_1',
         'mcp1_2',
         'mcp1_3',
@@ -58,5 +59,10 @@ class Creencias1 extends Model
         'mcp1_48',
         'remaining_time'
     ];
+
+    public function applicant() 
+    { 
+        return $this->belongsTo(Applicant::class, 'applicant_id'); 
+    }
 }
 

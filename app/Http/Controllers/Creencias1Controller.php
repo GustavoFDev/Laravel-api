@@ -29,16 +29,18 @@ class Creencias1Controller extends Controller
      */
     public function store(Request $request)
     {
-        // Validar los campos dinámicos y el tiempo restante
+        // Validar los campos dinámicos, el tiempo restante y el applicant_id
         $fields = $request->validate(
             collect(range(1, 48))->mapWithKeys(fn ($i) => ["mcp1_$i" => 'required|numeric'])->toArray() + [
-                'remaining_time' => 'required|integer|min:0'
+                'remaining_time' => 'required|integer|min:0',
+                'applicant_id' => 'required|exists:applicants,id' 
             ]
         );
 
         // Crear el registro en la base de datos
         $creencias1 = Creencias1::create($fields);
-        return $creencias1;  
+
+        return response()->json($creencias1, 201);
     }
 
     /**
@@ -82,3 +84,6 @@ class Creencias1Controller extends Controller
         return ['mensaje' => 'The data was deleted'];
     }
 }
+
+
+    
