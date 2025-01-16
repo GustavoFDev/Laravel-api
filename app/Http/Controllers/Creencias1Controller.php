@@ -31,9 +31,9 @@ class Creencias1Controller extends Controller
     {
         // Validar los campos dinámicos, el tiempo restante y el applicant_id
         $fields = $request->validate(
-            collect(range(1, 48))->mapWithKeys(fn ($i) => ["mcp1_$i" => 'required|numeric'])->toArray() + [
+            collect(range(1, 48))->mapWithKeys(fn($i) => ["mcp1_$i" => 'required|numeric'])->toArray() + [
                 'remaining_time' => 'required|integer|min:0',
-                'applicant_id' => 'required|exists:applicants,id' 
+                'applicant_id' => 'required|exists:applicants,id'
             ]
         );
 
@@ -65,7 +65,7 @@ class Creencias1Controller extends Controller
     public function update(Request $request, Creencias1 $creencias1)
     {
         $fields = $request->validate(
-            collect(range(1, 48))->mapWithKeys(fn ($i) => ["mcp1_$i" => 'required|numeric'])->toArray() + [
+            collect(range(1, 48))->mapWithKeys(fn($i) => ["mcp1_$i" => 'required|numeric'])->toArray() + [
                 'remaining_time' => 'required|integer|min:0'
             ]
         );
@@ -83,7 +83,10 @@ class Creencias1Controller extends Controller
 
         return ['mensaje' => 'The data was deleted'];
     }
+
+    public function getByApplicantId($applicantId)
+    {
+        $creencias1 = Creencias1::where('applicant_id', $applicantId)->get();
+        return response()->json($creencias1);
+    }
 }
-
-
-    
