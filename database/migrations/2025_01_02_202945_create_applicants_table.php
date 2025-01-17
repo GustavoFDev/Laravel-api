@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('name_a');
             $table->string('surname_p');
             $table->string('surname_m');
-            $table->string('email_a');
+            $table->date('b_date');
+            $table->string('gender');
             $table->string('street');
             $table->string('number');
             $table->string('col');
@@ -26,7 +27,8 @@ return new class extends Migration
             $table->string('postal_code');
             $table->string('day_phone');
             $table->string('night_phone');
-            $table->date('b_date');
+            $table->string('email_a');
+            $table->string('rfc');
             $table->boolean('employee');
             $table->boolean('former_employee');
             $table->timestamps();

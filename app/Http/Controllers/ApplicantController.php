@@ -20,8 +20,9 @@ class ApplicantController extends Controller
         $fields = $request->validate([ 
             'name_a' => 'required|string|max:255', 
             'surname_p' => 'required|string|max:255',
-            'surname_m' => 'required|string|max:255', 
-            'email_a' => 'required|string|max:255',
+            'surname_m' => 'required|string|max:255',
+            'b_date' => 'required|date',
+            'gender' => 'required|string|max:255',
             'street' => 'required|string', 
             'number' => 'required|string',
             'col' => 'required|string|max:255',
@@ -30,10 +31,11 @@ class ApplicantController extends Controller
             'country' => 'required|string|max:255',
             'postal_code' => 'required|string|max:20',
             'day_phone' => 'required|string|max:20', 
-            'night_phone' => 'required|string|max:20',
-            'b_date' => 'required|date', 
+            'night_phone' => 'required|string|max:20',  
+            'email_a' => 'required|string|max:255',
+            'rfc' => 'required|string|max:255',
             'employee' => 'required|boolean',
-            'former_employee' => 'required|boolean' 
+            'former_employee' => 'required|boolean'
         ]); 
                 
         $applicant = Applicant::create($fields); 
@@ -62,7 +64,8 @@ class ApplicantController extends Controller
             'night_phone' => 'required|string|max:20',
             'b_date' => 'required|date', 
             'employee' => 'required|boolean',
-            'former_employee' => 'required|boolean'
+            'former_employee' => 'required|boolean',
+            'required|string|max:255'
         ]);
 
         $applicant->update($fields);

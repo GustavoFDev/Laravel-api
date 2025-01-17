@@ -14,8 +14,9 @@ class Applicant extends Model
     protected $fillable = [
         'name_a',
         'surname_p',
-        'surname_m', 
-        'email_a', 
+        'surname_m',
+        'b_date',  
+        'gender',
         'street', 
         'number', 
         'col', 
@@ -25,9 +26,11 @@ class Applicant extends Model
         'postal_code', 
         'day_phone', 
         'night_phone', 
-        'b_date', 
+        'email_a',
+        'rfc',
         'employee', 
-        'former_employee'
+        'former_employee',
+        
     ];
 
 }
