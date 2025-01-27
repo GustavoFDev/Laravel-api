@@ -6,7 +6,8 @@ use App\Http\Controllers\Creencias1Controller;
 use App\Http\Controllers\Creencias2Controller;
 use App\Http\Controllers\Creencias3Controller;
 use App\Http\Controllers\Creencias4Controller;
-use App\Http\Controllers\PruebaController;   
+use App\Http\Controllers\PruebaController;
+use App\Http\Controllers\RazonamientoNumController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,8 @@ Route::apiResource('creencias_personales1', Creencias1Controller::class);
 Route::apiResource('creencias_personales2', Creencias2Controller::class);
 Route::apiResource('creencias_personales3', Creencias3Controller::class);
 Route::apiResource('creencias_personales4', Creencias4Controller::class);
+
+Route::apiResource('razonamiento_numerico', RazonamientoNumController::class);
 
 
 Route::get('creencias_personales1/applicant/{applicantId}', [Creencias1Controller::class, 'getByApplicantId']);
