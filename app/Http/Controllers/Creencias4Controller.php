@@ -28,7 +28,7 @@ class Creencias4Controller extends Controller
     */
    public function store(Request $request)
    {
-       
+
        $fields = $request->validate(
            collect(range(1, 31))->mapWithKeys(fn ($i) => ["mcp4_$i" => 'required|numeric'])->toArray() + [
                'remaining_time' => 'required|integer|min:0',
@@ -80,4 +80,10 @@ class Creencias4Controller extends Controller
 
        return ['mensaje' => 'The data was deleted'];
    }
+
+   public function getByApplicantId($applicantId)
+    {
+        $creencias4 = Creencias4::where('applicant_id', $applicantId)->get();
+        return response()->json($creencias4);
+    }
 }

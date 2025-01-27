@@ -81,4 +81,10 @@ class Creencias2Controller extends Controller
 
         return ['mensaje' => 'The data was deleted'];
     }
+
+    public function getByApplicantId($applicantId)
+    {
+        $creencias2 = Creencias2::where('applicant_id', $applicantId)->get();
+        return response()->json($creencias2);
+    }
 }
