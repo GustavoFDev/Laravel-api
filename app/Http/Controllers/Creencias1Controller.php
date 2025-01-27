@@ -29,18 +29,27 @@ class Creencias1Controller extends Controller
      */
     public function store(Request $request)
     {
-        // Validar los campos dinámicos, el tiempo restante y el applicant_id
+        // Validar los campos dinámicos, el tiempo restante, el applicant_id y el current_step
         $fields = $request->validate(
             collect(range(1, 48))->mapWithKeys(fn($i) => ["mcp1_$i" => 'required|numeric'])->toArray() + [
                 'remaining_time' => 'required|integer|min:0',
-                'applicant_id' => 'required|exists:applicants,id'
+                'applicant_id' => 'required|exists:applicants,id',
+                'current_step' => 'required|integer|min:1|max:17' // Ajusta el rango según el número de steps que tengas
             ]
         );
 
-        // Crear el registro en la base de datos
-        $creencias1 = Creencias1::create($fields);
+        // Verificar si ya existe un registro para el applicant_id
+        $existingRecord = Creencias1::where('applicant_id', $fields['applicant_id'])->first();
 
-        return response()->json($creencias1, 201);
+        if ($existingRecord) {
+            // Si existe un registro, actualizarlo
+            $existingRecord->update($fields);
+            return response()->json($existingRecord, 200);
+        } else {
+            // Crear un nuevo registro en la base de datos
+            $creencias1 = Creencias1::create($fields);
+            return response()->json($creencias1, 201);
+        }
     }
 
     /**
@@ -62,17 +71,25 @@ class Creencias1Controller extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Creencias1 $creencias1)
+    public function update(Request $request, $id)
     {
         $fields = $request->validate(
             collect(range(1, 48))->mapWithKeys(fn($i) => ["mcp1_$i" => 'required|numeric'])->toArray() + [
-                'remaining_time' => 'required|integer|min:0'
+                'remaining_time' => 'required|integer|min:0',
+                'current_step' => 'required|integer|min:1|max:17'
             ]
         );
 
-        $creencias1->update($fields);
-        return $creencias1;
+        $creencias1 = Creencias1::where('applicant_id', $id)->first();
+
+        if ($creencias1) {
+            $creencias1->update($fields);
+            return response()->json($creencias1, 200);
+        } else {
+            return response()->json(['error' => 'Record not found'], 404);
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
