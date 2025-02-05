@@ -29,13 +29,28 @@ class RazonamientoNumController extends Controller
      */
     public function store(Request $request)
     {
+        // Validar los campos dinámicos, el tiempo restante, el applicant_id y el current_step
         $fields = $request->validate(
             collect(range(1, 10))->mapWithKeys(fn ($i) => ["mrn_$i" => 'required|numeric'])->toArray() + [
+                'remaining_time' => 'required|integer|min:0',
+                'applicant_id' => 'required|exists:applicants,id',
+                'current_step' => 'required|integer|min:1|max:17' // Ajusta el rango según el número de steps que tengas
+
             ]
         );
- 
-        $razonamientoNum = RazonamientoNum::create($fields);
-        return $razonamientoNum; 
+
+        // Verificar si ya existe un registro para el applicant_id
+        $existingRecord = RazonamientoNum::where('applicant_id', $fields['applicant_id'])->first();
+
+        if ($existingRecord) {
+            // Si existe un registro, actualizarlo
+            $existingRecord->update($fields);
+            return response()->json($existingRecord, 200);
+        } else {
+            // Crear un nuevo registro en la base de datos
+            $razonamientoNum = RazonamientoNum::create($fields);
+            return response()->json($razonamientoNum, 201);
+        }
     }
 
     /**
@@ -77,5 +92,11 @@ class RazonamientoNumController extends Controller
         $razonamientoNum->delete();
 
        return ['mensaje' => 'The data was deleted'];
+    }
+
+    public function getByApplicantId($applicantId)
+    {
+        $razonamientoNum = RazonamientoNum::where('applicant_id', $applicantId)->get();
+        return response()->json($razonamientoNum);
     }
 }

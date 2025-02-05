@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('razonamiento_nums', function (Blueprint $table) {
+        Schema::create('escenarios_realistas', function (Blueprint $table) {
             $table->id();
-            for ($i = 1; $i <= 10; $i++) {
-                $table->integer("mrn_$i")->nullable(false);
+            for ($i = 1; $i <= 80; $i++) {
+                $table->integer("er_$i")->nullable(false);
             }
             // Añadir la columna applicant_id como string
             $table->string('applicant_id');
@@ -22,7 +22,8 @@ return new class extends Migration
             $table->foreign('applicant_id')->references('id')->on('applicants')->onDelete('cascade');
             // Cambiar el tipo de 'remaining_time' a integer (para guardar en segundos)
             $table->string('current_step');
-            $table->integer('remaining_time')->nullable(); 
+            $table->integer('remaining_time')->nullable();
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('razonamiento_nums');
+        Schema::dropIfExists('escenarios_realistas');
     }
 };

@@ -8,7 +8,7 @@ use MongoDb\Laravel\Eloquent\Model;
 class RazonamientoNum extends Model
 {
     protected $fillable = [
-        'razonamientonum_id',
+        'applicant_id',
         'mrn_1', //mrn_1 -> modulo razonamiento númerico _ pregunta 1
         'mrn_2',
         'mrn_3',
@@ -19,7 +19,8 @@ class RazonamientoNum extends Model
         'mrn_8',
         'mrn_9',
         'mrn_10',
-        'remaining_time'
+        'remaining_time',
+        'current_step'
     ];
     public function razonamientonum() 
     { 
