@@ -6,6 +6,7 @@ use App\Http\Controllers\Creencias1Controller;
 use App\Http\Controllers\Creencias2Controller;
 use App\Http\Controllers\Creencias3Controller;
 use App\Http\Controllers\Creencias4Controller;
+use App\Http\Controllers\EscenariosRealistasController;
 use App\Http\Controllers\PruebaController;
 use App\Http\Controllers\RazonamientoLogController;
 use App\Http\Controllers\RazonamientoNumController;
@@ -23,17 +24,19 @@ Route::apiResource('creencias_personales1', Creencias1Controller::class);
 Route::apiResource('creencias_personales2', Creencias2Controller::class);
 Route::apiResource('creencias_personales3', Creencias3Controller::class);
 Route::apiResource('creencias_personales4', Creencias4Controller::class);
-
 Route::apiResource('razonamiento_numerico', RazonamientoNumController::class);
 
 Route::apiResource('razonamiento_logico', RazonamientoLogController::class);
+
+Route::apiResource('escenariosRealistas', EscenariosRealistasController::class);
+
 
 Route::get('creencias_personales1/applicant/{applicantId}', [Creencias1Controller::class, 'getByApplicantId']);
 Route::patch('creencias_personales1/update/{applicantId}', [Creencias1Controller::class, 'update']);
 Route::get('creencias_personales2/applicant/{applicantId}', [Creencias2Controller::class, 'getByApplicantId']);
 Route::get('creencias_personales3/applicant/{applicantId}', [Creencias3Controller::class, 'getByApplicantId']);
 Route::get('creencias_personales4/applicant/{applicantId}', [Creencias4Controller::class, 'getByApplicantId']);
-
+Route::get('razonamiento_numerico/applicant/{applicantId}', [RazonamientoNumController::class, 'getByApplicantId']);
 
 Route::apiResource('applicant', ApplicantController::class);
 
