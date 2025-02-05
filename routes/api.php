@@ -7,10 +7,10 @@ use App\Http\Controllers\Creencias2Controller;
 use App\Http\Controllers\Creencias3Controller;
 use App\Http\Controllers\Creencias4Controller;
 use App\Http\Controllers\PruebaController;
+use App\Http\Controllers\RazonamientoLogController;
 use App\Http\Controllers\RazonamientoNumController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 
 //Route::get('/user', function (Request $request) {
 //    return $request->user();
@@ -26,6 +26,7 @@ Route::apiResource('creencias_personales4', Creencias4Controller::class);
 
 Route::apiResource('razonamiento_numerico', RazonamientoNumController::class);
 
+Route::apiResource('razonamiento_logico', RazonamientoLogController::class);
 
 Route::get('creencias_personales1/applicant/{applicantId}', [Creencias1Controller::class, 'getByApplicantId']);
 Route::patch('creencias_personales1/update/{applicantId}', [Creencias1Controller::class, 'update']);
