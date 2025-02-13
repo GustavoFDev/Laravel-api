@@ -48,3 +48,4 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 Route::put('users/{id}/status', [AuthController::class, 'updateStatus'])->middleware('auth:sanctum');
 Route::delete('users/{id}', [AuthController::class, 'destroy'])->middleware('auth:sanctum');
 
+Route::get('razonamiento_logico/applicant/{applicantId}', [RazonamientoLogController::class, 'getByApplicantId']);

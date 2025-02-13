@@ -96,7 +96,7 @@ class RazonamientoLogController extends Controller
        return ['mensaje' => 'The data was deleted'];
     }
 
-    public function getByApplicant($applicantId){
+    public function getByApplicantId($applicantId){
         $razonamientoLog = RazonamientoLog::where('applicant_id', $applicantId)->get();
         return response()->json($razonamientoLog);
     }
