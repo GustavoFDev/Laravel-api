@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Creencias1;
 use Illuminate\Http\Request;
+use App\Models\Applicant;
 
 class Creencias1Controller extends Controller
 {
@@ -44,13 +45,19 @@ class Creencias1Controller extends Controller
         if ($existingRecord) {
             // Si existe un registro, actualizarlo
             $existingRecord->update($fields);
-            return response()->json($existingRecord, 200);
+            $statusCode = 200;
         } else {
             // Crear un nuevo registro en la base de datos
             $creencias1 = Creencias1::create($fields);
-            return response()->json($creencias1, 201);
+            $statusCode = 201;
         }
+
+        // Actualizar el campo "status" en el registro del applicant
+        Applicant::where('id', $fields['applicant_id'])->update(['status' => 1]);
+
+        return response()->json($existingRecord ?? $creencias1, $statusCode);
     }
+
 
     /**
      * Display the specified resource.

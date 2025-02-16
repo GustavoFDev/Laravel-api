@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\RazonamientoNum;
 use Illuminate\Http\Request;
+use App\Models\Applicant;
 
 class RazonamientoNumController extends Controller
 {
@@ -35,23 +36,28 @@ class RazonamientoNumController extends Controller
                 'remaining_time' => 'required|integer|min:0',
                 'applicant_id' => 'required|exists:applicants,id',
                 'current_step' => 'required|integer|min:1|max:17' // Ajusta el rango según el número de steps que tengas
-
             ]
         );
-
+    
         // Verificar si ya existe un registro para el applicant_id
         $existingRecord = RazonamientoNum::where('applicant_id', $fields['applicant_id'])->first();
-
+    
         if ($existingRecord) {
             // Si existe un registro, actualizarlo
             $existingRecord->update($fields);
-            return response()->json($existingRecord, 200);
+            $statusCode = 200;
         } else {
             // Crear un nuevo registro en la base de datos
             $razonamientoNum = RazonamientoNum::create($fields);
-            return response()->json($razonamientoNum, 201);
+            $statusCode = 201;
         }
+    
+        // Actualizar el campo "status" en el registro del applicant
+        Applicant::where('id', $fields['applicant_id'])->update(['status' => 6]);
+    
+        return response()->json($existingRecord ?? $razonamientoNum, $statusCode);
     }
+    
 
     /**
      * Display the specified resource.

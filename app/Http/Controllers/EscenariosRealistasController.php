@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\escenariosRealistas;
 use Illuminate\Http\Request;
+use App\Models\Applicant;
 
 class EscenariosRealistasController extends Controller
 {
@@ -35,24 +36,29 @@ class EscenariosRealistasController extends Controller
             collect(range(1, 80))->mapWithKeys(fn($i) => ["er_$i" => 'required|numeric'])->toArray() + [
                 'applicant_id' => 'required|exists:applicants,id',
                 'current_step' => 'required|integer|min:1|max:17',
-                'remaining_time' => 'required|integer|min:0',
-                'status' => 'required|integer|min:0'
+                'remaining_time' => 'required|integer|min:0'
             ]
         );
-
+    
         // Verificar si ya existe un registro para el applicant_id
         $existingRecord = EscenariosRealistas::where('applicant_id', $fields['applicant_id'])->first();
-
+    
         if ($existingRecord) {
             // Si existe un registro, actualizarlo
             $existingRecord->update($fields);
-            return response()->json($existingRecord, 200);
+            $statusCode = 200;
         } else {
             // Crear un nuevo registro en la base de datos
             $er = EscenariosRealistas::create($fields);
-            return response()->json($er, 201);
+            $statusCode = 201;
         }
+    
+        // Actualizar el campo "status" en el registro del applicant
+        Applicant::where('id', $fields['applicant_id'])->update(['status' => 2]);
+    
+        return response()->json($existingRecord ?? $er, $statusCode);
     }
+    
 
     /**
      * Display the specified resource.

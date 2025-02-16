@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Creencias4;
 use Illuminate\Http\Request;
+use App\Models\Applicant;
 
 class Creencias4Controller extends Controller
 {/**
@@ -26,19 +27,35 @@ class Creencias4Controller extends Controller
    /**
     * Store a newly created resource in storage.
     */
-   public function store(Request $request)
-   {
+    public function store(Request $request)
+    {
+        // Validar los campos dinámicos, el tiempo restante, el applicant_id y el current_step
+        $fields = $request->validate(
+            collect(range(1, 48))->mapWithKeys(fn($i) => ["mcp1_$i" => 'required|numeric'])->toArray() + [
+                'remaining_time' => 'required|integer|min:0',
+                'applicant_id' => 'required|exists:applicants,id',
+                'current_step' => 'required|integer|min:1|max:17' // Ajusta el rango según el número de steps que tengas
+            ]
+        );
 
-       $fields = $request->validate(
-           collect(range(1, 31))->mapWithKeys(fn ($i) => ["mcp4_$i" => 'required|numeric'])->toArray() + [
-               'remaining_time' => 'required|integer|min:0',
-               'applicant_id' => 'required|exists:applicants,id' 
-           ]
-       );
+        // Verificar si ya existe un registro para el applicant_id
+        $existingRecord = creencias4::where('applicant_id', $fields['applicant_id'])->first();
 
-       $creencias4 = Creencias4::create($fields);
-       return $creencias4;  
-   }
+        if ($existingRecord) {
+            // Si existe un registro, actualizarlo
+            $existingRecord->update($fields);
+            $statusCode = 200;
+        } else {
+            // Crear un nuevo registro en la base de datos
+            $creencias4 = creencias4::create($fields);
+            $statusCode = 201;
+        }
+
+        // Actualizar el campo "status" en el registro del applicant
+        Applicant::where('id', $fields['applicant_id'])->update(['status' => 7]);
+
+        return response()->json($existingRecord ?? $creencias4, $statusCode);
+    }
 
    /**
     * Display the specified resource.

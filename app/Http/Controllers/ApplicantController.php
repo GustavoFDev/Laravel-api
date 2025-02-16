@@ -35,15 +35,34 @@ class ApplicantController extends Controller
             'email_a' => 'required|string|max:255',
             'rfc' => 'required|string|max:255',
             'employee' => 'required|boolean',
-            'former_employee' => 'required|boolean'
+            'former_employee' => 'required|boolean',
         ]); 
-                
-        $applicant = Applicant::create($fields); 
-
         
-        return $applicant;
-       
+        $applicant = Applicant::create([
+            'name_a' => $fields['name_a'],
+            'surname_p' => $fields['surname_p'],
+            'surname_m' => $fields['surname_m'],
+            'b_date' => $fields['b_date'],
+            'gender' => $fields['gender'],
+            'street' => $fields['street'],
+            'number' => $fields['number'],
+            'col' => $fields['col'],
+            'city' => $fields['city'],
+            'state' => $fields['state'],
+            'country' => $fields['country'],
+            'postal_code' => $fields['postal_code'],
+            'day_phone' => $fields['day_phone'],
+            'night_phone' => $fields['night_phone'],
+            'email_a' => $fields['email_a'],
+            'rfc' => $fields['rfc'],
+            'employee' => $fields['employee'],
+            'former_employee' => $fields['former_employee'],
+            'status' => 0, // Asignar el valor por defecto 0 a status
+        ]); 
+    
+        return response()->json(['message' => 'Applicant created successfully', 'applicant' => $applicant], 201);
     }
+    
 
 
     public function update(Request $request, applicant $applicant)
@@ -86,5 +105,14 @@ class ApplicantController extends Controller
         return response()->json($applicant);
     }
 
-    
+      // Nueva función para obtener un applicant por RFC
+      public function getApplicantByRFC($rfc)
+      {
+          $applicant = Applicant::where('rfc', $rfc)->first();
+          if ($applicant) {
+              return response()->json($applicant);
+          } else {
+              return response()->json(['message' => 'Applicant not found'], 404);
+          }
+      }
 }

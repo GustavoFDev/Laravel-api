@@ -31,9 +31,8 @@ return new class extends Migration
             $table->string('rfc');
             $table->boolean('employee');
             $table->boolean('former_employee');
+            $table->integer('status')->default(0); 
             $table->timestamps();
-
-
         });
     }
 

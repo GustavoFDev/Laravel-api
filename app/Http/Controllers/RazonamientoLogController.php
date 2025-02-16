@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\RazonamientoLog;
 use Illuminate\Http\Request;
+use App\Models\Applicant;
 
 class RazonamientoLogController extends Controller
 {
@@ -29,24 +30,34 @@ class RazonamientoLogController extends Controller
      */
     public function store(Request $request)
     {
+        // Validar los campos dinámicos, el tiempo restante, el applicant_id y el current_step
         $fields = $request->validate(
             collect(range(1, 15))->mapWithKeys(fn ($i) => ["mrl_$i" => 'required|numeric'])->toArray() + [
                 'applicant_id' => 'required|exists:applicants,id',
-                'current_step'=> 'required|integer|min:1|max:16',
+                'current_step' => 'required|integer|min:1|max:16',
                 'remaining_time' => 'required|integer|min:0'
             ]
         );
-
+    
+        // Verificar si ya existe un registro para el applicant_id
         $existingRecord = RazonamientoLog::where('applicant_id', $fields['applicant_id'])->first();
- 
+    
         if ($existingRecord) {
+            // Si existe un registro, actualizarlo
             $existingRecord->update($fields);
-            return response()->json($existingRecord, 200);
+            $statusCode = 200;
         } else {
+            // Crear un nuevo registro en la base de datos
             $rl = RazonamientoLog::create($fields);
-            return response()->json( $rl, 201);
+            $statusCode = 201;
         }
+    
+        // Actualizar el campo "status" en el registro del applicant
+        Applicant::where('id', $fields['applicant_id'])->update(['status' => 4]);
+    
+        return response()->json($existingRecord ?? $rl, $statusCode);
     }
+    
 
     /**
      * Display the specified resource.

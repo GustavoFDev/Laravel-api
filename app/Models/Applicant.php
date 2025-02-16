@@ -30,7 +30,7 @@ class Applicant extends Model
         'rfc',
         'employee', 
         'former_employee',
-        
+        'status',
     ];
 
 }

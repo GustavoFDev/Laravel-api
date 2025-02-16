@@ -39,6 +39,8 @@ Route::get('creencias_personales4/applicant/{applicantId}', [Creencias4Controlle
 Route::get('razonamiento_numerico/applicant/{applicantId}', [RazonamientoNumController::class, 'getByApplicantId']);
 
 Route::apiResource('applicant', ApplicantController::class);
+Route::get('/applicant/rfc/{rfc}', [ApplicantController::class, 'getApplicantByRFC']);
+
 
 
 Route::post('/register', [AuthController::class, 'register']);
