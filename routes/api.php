@@ -29,7 +29,7 @@ Route::apiResource('razonamiento_numerico', RazonamientoNumController::class);
 Route::apiResource('razonamiento_logico', RazonamientoLogController::class);
 
 Route::apiResource('escenariosRealistas', EscenariosRealistasController::class);
-
+Route::get('escenariosRealistas/applicant/{applicantId}', [ EscenariosRealistasController::class, 'getByApplicantId']);
 
 Route::get('creencias_personales1/applicant/{applicantId}', [Creencias1Controller::class, 'getByApplicantId']);
 Route::patch('creencias_personales1/update/{applicantId}', [Creencias1Controller::class, 'update']);

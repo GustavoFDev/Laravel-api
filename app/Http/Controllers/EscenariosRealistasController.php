@@ -110,4 +110,11 @@ class EscenariosRealistasController extends Controller
         $escenariosRealistas ->delete();
         return ['mensaje' => 'The data was deleted'];
     }
+
+    public function getByApplicantId($applicantId)
+    {
+        $escenariosRealistas = EscenariosRealistas::where('applicant_id', $applicantId)->get();
+        return response()->json($escenariosRealistas);
+    }
+    
 }

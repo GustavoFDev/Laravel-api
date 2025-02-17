@@ -32,7 +32,7 @@ class Creencias2Controller extends Controller
     {
         // Validar los campos dinámicos, el tiempo restante, el applicant_id y el current_step
         $fields = $request->validate(
-            collect(range(1, 48))->mapWithKeys(fn($i) => ["mcp1_$i" => 'required|numeric'])->toArray() + [
+            collect(range(1, 33))->mapWithKeys(fn($i) => ["mcp2_$i" => 'required|numeric'])->toArray() + [
                 'remaining_time' => 'required|integer|min:0',
                 'applicant_id' => 'required|exists:applicants,id',
                 'current_step' => 'required|integer|min:1|max:17' // Ajusta el rango según el número de steps que tengas
