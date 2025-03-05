@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApplicantController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ConteoFigController;
 use App\Http\Controllers\Creencias1Controller;
 use App\Http\Controllers\Creencias2Controller;
 use App\Http\Controllers\Creencias3Controller;
@@ -58,3 +59,8 @@ Route::delete('users/{id}', [AuthController::class, 'destroy'])->middleware('aut
 
 Route::get('razonamiento_logico/applicant/{applicantId}', [RazonamientoLogController::class, 'getByApplicantId']);
 Route::patch('razonamiento_logico/update/{applicantId}', [RazonamientoLogController::class, 'update']);
+
+Route::apiResource('conteo_figuras', ConteoFigController::class);
+
+
+
