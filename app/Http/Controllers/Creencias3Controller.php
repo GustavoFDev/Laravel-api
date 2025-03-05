@@ -29,34 +29,29 @@ class Creencias3Controller extends Controller
      */
     public function store(Request $request)
     {
-        // Validar los campos dinámicos, el tiempo restante, el applicant_id y el current_step
-        $fields = $request->validate(
-            collect(range(1, 32))->mapWithKeys(fn($i) => ["mcp3_$i" => 'required|numeric'])->toArray() + [
-                'remaining_time' => 'required|integer|min:0',
-                'applicant_id' => 'required|exists:applicants,id',
-                'current_step' => 'required|integer|min:1|max:17' // Ajusta el rango según el número de steps que tengas
-            ]
-        );
-
+        $fields = $request->validate([
+            'applicant_id' => 'required|exists:applicants,id',
+            'remaining_time' => 'required|integer|min:0',
+            'current_step' => 'required|integer|min:1|max:17'
+        ]);
+    
         // Verificar si ya existe un registro para el applicant_id
-        $existingRecord = creencias3::where('applicant_id', $fields['applicant_id'])->first();
-
+        $existingRecord = Creencias3::where('applicant_id', $fields['applicant_id'])->first();
+    
         if ($existingRecord) {
-            // Si existe un registro, actualizarlo
-            $existingRecord->update($fields);
-            $statusCode = 200;
-        } else {
-            // Crear un nuevo registro en la base de datos
-            $creencias3 = creencias3::create($fields);
-            $statusCode = 201;
+            return response()->json(['message' => 'El registro ya existe'], 200);
         }
-
-        // Actualizar el campo "status" en el registro del applicant
-        Applicant::where('id', $fields['applicant_id'])->update(['status' => 5]);
-
-        return response()->json($existingRecord ?? $creencias3, $statusCode);
+    
+        // Crear un nuevo registro con valores por defecto
+        $defaultValues = [];
+        for ($i = 1; $i <= 32; $i++) {
+            $defaultValues["mcp3_$i"] = 50;
+        }
+    
+        $creencias3 = Creencias3::create(array_merge($fields, $defaultValues));
+    
+        return response()->json($creencias3, 201);
     }
-
     /**
      * Display the specified resource.
      */
@@ -76,16 +71,32 @@ class Creencias3Controller extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Creencias3 $creencias3)
+    public function update(Request $request, $id)
     {
-        $fields = $request->validate(
-            collect(range(1, 32))->mapWithKeys(fn ($i) => ["mcp3_$i" => 'required|numeric'])->toArray() + [
-                'remaining_time' => 'required|integer|min:0'
-            ]
-        );
-
-        $creencias3->update($fields);
-        return $creencias3;
+        $fields = $request->validate([
+            'remaining_time' => 'required|integer|min:0',
+            'current_step' => 'required|integer|min:1|max:17'
+        ]);
+    
+        // Filtrar solo las preguntas enviadas
+        $responses = collect($request->all())->filter(fn($value, $key) => str_starts_with($key, 'mcp3_'));
+    
+        // Buscar el registro basado en el applicant_id
+        $creencias3 = Creencias3::where('applicant_id', $id)->first();
+    
+        if (!$creencias3) {
+            return response()->json(['error' => 'Record not found'], 404);
+        }
+    
+        // Actualizar el registro en Creencias1
+        $creencias3->update($responses->toArray() + $fields);
+    
+        // Si current_step es 17, actualizar el status del applicant
+        if ($fields['current_step'] == 12 || $fields['remaining_time'] == 0 ) {
+            Applicant::where('id', $id)->update(['status' => 5]);
+        }
+    
+        return response()->json($creencias3, 200);
     }
 
     /**

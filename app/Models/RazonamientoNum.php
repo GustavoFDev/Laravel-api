@@ -20,10 +20,11 @@ class RazonamientoNum extends Model
         'mrn_9',
         'mrn_10',
         'remaining_time',
-        'current_step'
+        'current_step',
+        'selected_options'
     ];
-    public function razonamientonum() 
+    public function applicant() 
     { 
-        return $this->belongsTo(RazonamientoNum::class, 'applicant_id'); 
+        return $this->belongsTo(Applicant::class, 'applicant_id'); 
     }
 }

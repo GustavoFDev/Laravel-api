@@ -92,7 +92,6 @@ class escenariosRealistas extends Model
         'er_80',
         'current_step',
         'remaining_time',
-        'status'
     ];
     
 
