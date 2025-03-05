@@ -40,7 +40,8 @@ class Creencias4 extends Model
         'mcp4_29',
         'mcp4_30',
         'mcp4_31',
-        'remaining_time'
+        'remaining_time',
+        'current_step'
     ];
 
     public function applicant() 

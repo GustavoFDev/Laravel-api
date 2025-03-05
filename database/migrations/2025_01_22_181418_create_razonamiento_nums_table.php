@@ -23,6 +23,7 @@ return new class extends Migration
             // Cambiar el tipo de 'remaining_time' a integer (para guardar en segundos)
             $table->string('current_step');
             $table->integer('remaining_time')->nullable(); 
+            $table->json('selected_options')->nullable(); // Cambia a nullable() si es necesario
             $table->timestamps();
         });
     }

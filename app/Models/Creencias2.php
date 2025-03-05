@@ -42,7 +42,8 @@ class Creencias2 extends Model
         'mcp2_31',
         'mcp2_32',
         'mcp2_33',
-        'remaining_time'
+        'remaining_time',
+        'current_step'
     ];
 
     public function applicant() 

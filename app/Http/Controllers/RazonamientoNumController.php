@@ -32,32 +32,30 @@ class RazonamientoNumController extends Controller
     {
         // Validar los campos dinámicos, el tiempo restante, el applicant_id y el current_step
         $fields = $request->validate(
-            collect(range(1, 10))->mapWithKeys(fn ($i) => ["mrn_$i" => 'required|numeric'])->toArray() + [
-                'remaining_time' => 'required|integer|min:0',
+            collect(range(1, 10))->mapWithKeys(fn($i) => ["mrn_$i" => 'required|numeric'])->toArray() + [
                 'applicant_id' => 'required|exists:applicants,id',
-                'current_step' => 'required|integer|min:1|max:17' // Ajusta el rango según el número de steps que tengas
+                'current_step' => 'required|integer|min:1|max:17',
+                'remaining_time' => 'required|integer|min:0',
+                'selected_options' => 'nullable|array',
+                'selected_options.*' => 'integer|min:0|max:9' // Asegurar que cada elemento sea un número válido
             ]
         );
-    
+
         // Verificar si ya existe un registro para el applicant_id
         $existingRecord = RazonamientoNum::where('applicant_id', $fields['applicant_id'])->first();
-    
+
         if ($existingRecord) {
-            // Si existe un registro, actualizarlo
-            $existingRecord->update($fields);
-            $statusCode = 200;
+            return response()->json(['message' => 'El registro ya existe'], 200);
         } else {
             // Crear un nuevo registro en la base de datos
+            $fields['selected_options'] = $fields['selected_options'] ?? []; // Asegurar que sea un array
             $razonamientoNum = RazonamientoNum::create($fields);
             $statusCode = 201;
         }
-    
-        // Actualizar el campo "status" en el registro del applicant
-        Applicant::where('id', $fields['applicant_id'])->update(['status' => 6]);
-    
+
         return response()->json($existingRecord ?? $razonamientoNum, $statusCode);
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -78,16 +76,39 @@ class RazonamientoNumController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, RazonamientoNum $razonamientoNum)
+    public function update(Request $request, $id)
     {
-        $fields = $request->validate(
-            collect(range(1, 10))->mapWithKeys(fn ($i) => ["mrn_$i" => 'required|numeric'])->toArray() + [
-                'remaining_time' => 'required|integer|min:0'
-            ]
-        );
- 
-        $razonamientoNum->update($fields);
-        return $razonamientoNum;
+        // Validar solo los campos que llegan en la petición
+        $validatedData = $request->validate([
+            'remaining_time' => 'required|integer|min:0',
+            'current_step' => 'required|integer|min:1|max:17',
+            'selected_options' => 'nullable|array',
+            'selected_options.*' => 'nullable|integer|min:0|max:9', // Permitir null o un número entre 0 y 5
+        ] + collect(range(1, 10))->mapWithKeys(fn($i) => ["mrn_$i" => 'sometimes|required|numeric'])->toArray());
+
+        // Buscar el registro del usuario
+        $razonamientoNum = RazonamientoNum::where('applicant_id', $id)->first();
+
+        if (!$razonamientoNum) {
+            return response()->json(['error' => 'Record not found'], 404);
+        }
+
+        // Filtrar solo los campos de mrl, current_step, remaining_time y selected_options
+        $responses = collect($request->all())->filter(function ($value, $key) {
+            return str_starts_with($key, 'mrn_') || in_array($key, ['current_step', 'remaining_time', 'selected_options']);
+        });
+
+        // Actualizar todos los valores recibidos sin afectar los demás
+        $razonamientoNum->update($responses->toArray());
+
+        // Si current_step es 16, actualizar el status del applicant
+        if (($validatedData['current_step'] == 12 && $request->has('mrn_10')) || $validatedData['remaining_time'] == 0) {
+            Applicant::where('id', $id)->update(['status' => 6]);
+        }
+
+        return response()->json([
+            'message' => 'Record updated successfully',
+        ], 200);
     }
 
     /**

@@ -25,10 +25,12 @@ class RazonamientoLog extends Model
         'mrl_14',
         'mrl_15',
         'remaining_time',
-        'current_step'
+        'current_step',
+        'selected_options'
     ];
-    public function razonamientonum() 
+
+    public function applicant() 
     { 
-        return $this->belongsTo(RazonamientoNum::class, 'applicant_id'); 
+        return $this->belongsTo(Applicant::class, 'applicant_id'); 
     }
 }

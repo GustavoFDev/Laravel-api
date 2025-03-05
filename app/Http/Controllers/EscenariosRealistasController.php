@@ -39,26 +39,20 @@ class EscenariosRealistasController extends Controller
                 'remaining_time' => 'required|integer|min:0'
             ]
         );
-    
+
         // Verificar si ya existe un registro para el applicant_id
         $existingRecord = EscenariosRealistas::where('applicant_id', $fields['applicant_id'])->first();
-    
+
         if ($existingRecord) {
-            // Si existe un registro, actualizarlo
-            $existingRecord->update($fields);
-            $statusCode = 200;
+            return response()->json(['message' => 'El registro ya existe'], 200);
         } else {
             // Crear un nuevo registro en la base de datos
             $er = EscenariosRealistas::create($fields);
             $statusCode = 201;
         }
-    
-        // Actualizar el campo "status" en el registro del applicant
-        Applicant::where('id', $fields['applicant_id'])->update(['status' => 2]);
-    
+
         return response()->json($existingRecord ?? $er, $statusCode);
     }
-    
 
     /**
      * Display the specified resource.
@@ -82,25 +76,36 @@ class EscenariosRealistasController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-        $fields = $request->validate(
-            collect(range(1, 80))->mapWithKeys(fn($i) => ["er_$i" => 'required|numeric'])->toArray() + [
-                'current_step' => 'required|integer|min:1|max:17',
-                'remaining_time' => 'required|integer|min:0',
-                'status' => 'required|integer|min:0'
-            ]
-        );
+        // Validar solo los campos que llegan en la petición
+        $validatedData = $request->validate([
+            'remaining_time' => 'required|integer|min:0',
+            'current_step' => 'required|integer|min:1|max:17'
+        ] + collect(range(1, 80))->mapWithKeys(fn($i) => ["er_$i" => 'sometimes|required|numeric'])->toArray());
 
+        // Buscar el registro del usuario
         $er = EscenariosRealistas::where('applicant_id', $id)->first();
 
-        if ($er) {
-            $er->update($fields);
-            return response()->json($er, 200);
-        } else {
+        if (!$er) {
             return response()->json(['error' => 'Record not found'], 404);
         }
+
+        // Filtrar solo los campos de mrl, current_step, remaining_time y selected_options
+        $responses = collect($request->all())->filter(function ($value, $key) {
+            return str_starts_with($key, 'er_') || in_array($key, ['current_step', 'remaining_time']);
+        });
+
+        // Actualizar todos los valores recibidos sin afectar los demás
+        $er->update($responses->toArray());
+
+    // Si current_step es 12 y se cumple alguna de las condiciones adicionales, actualizar el status del applicant
+    if (($validatedData['current_step'] == 12 && $request->has('er_80')) || $validatedData['remaining_time'] == 0) {
+        Applicant::where('id', $id)->update(['status' => 2]);
     }
 
+        return response()->json([
+            'message' => 'Record updated successfully',
+        ], 200);
+    }
     /**
      * Remove the specified resource from storage.
      */
