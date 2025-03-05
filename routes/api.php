@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApplicantController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ConteoFigController;
 use App\Http\Controllers\Creencias1Controller;
 use App\Http\Controllers\Creencias2Controller;
 use App\Http\Controllers\Creencias3Controller;
@@ -51,3 +52,18 @@ Route::put('users/{id}/status', [AuthController::class, 'updateStatus'])->middle
 Route::delete('users/{id}', [AuthController::class, 'destroy'])->middleware('auth:sanctum');
 
 Route::get('razonamiento_logico/applicant/{applicantId}', [RazonamientoLogController::class, 'getByApplicantId']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Route::apiResource('conteo_figuras', ConteoFigController::class);
