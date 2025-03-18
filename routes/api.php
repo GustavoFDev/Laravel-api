@@ -49,6 +49,7 @@ Route::patch('razonamiento_numerico/update/{applicantId}', [RazonamientoNumContr
 
 Route::apiResource('applicant', ApplicantController::class);
 Route::get('/applicant/rfc/{rfc}', [ApplicantController::class, 'getApplicantByRFC']);
+
 // Control de usuarios
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/users-index', [AuthController::class, 'index'])->middleware('auth:sanctum');
@@ -56,6 +57,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::put('users/{id}/status', [AuthController::class, 'updateStatus'])->middleware('auth:sanctum');
 Route::delete('users/{id}', [AuthController::class, 'destroy'])->middleware('auth:sanctum');
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
 
 Route::get('razonamiento_logico/applicant/{applicantId}', [RazonamientoLogController::class, 'getByApplicantId']);
 Route::patch('razonamiento_logico/update/{applicantId}', [RazonamientoLogController::class, 'update']);
